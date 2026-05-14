@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Co-op Work Term Report | Kelechi Udeh | OMAFA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:      #1B3A6B;
+      --blue-mid:  #2A5298;
+      --blue-dark: #0f2040;
+      --gold:      #E8A020;
+      --gold-dark: #C5841A;
+      --bg:        #F5F7FA;
+      --white:     #FFFFFF;
+      --text:      #1A1A1A;
+      --muted:     #4A5568;
+      --border:    #D8E2EF;
+      --shadow:    0 4px 24px rgba(27,58,107,0.09);
+      --shadow-lg: 0 16px 48px rgba(27,58,107,0.15);
+      --radius:    18px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 999;
+      height: 58px;
+      background: rgba(15,32,64,0.93);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 2px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+    }
+    .nav-logo {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .nav-logo em { color: var(--gold); font-style: normal; }
+    .nav-links { display: flex; gap: 2px; list-style: none; }
+    .nav-links a {
+      color: rgba(255,255,255,0.72);
+      text-decoration: none;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--gold);
+      background: rgba(232,160,32,0.1);
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(140deg, #0c1e3c 0%, #1B3A6B 55%, #2A5298 100%);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 2rem 5rem;
+      overflow: hidden;
+    }
+    canvas#bg { position: absolute; inset: 0; pointer-events: none; }
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.12;
+      pointer-events: none;
+    }
+    .blob-1 { width: 700px; height: 700px; background: var(--gold); top: -200px; right: -180px; animation: float 9s ease-in-out infinite; }
+    .blob-2 { width: 450px; height: 450px; background: #5b9bd5; bottom: -120px; left: -100px; animation: float 12s ease-in-out infinite reverse; }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50%       { transform: translateY(-28px) scale(1.04); }
+    }
+    .hero-inner { position: relative; z-index: 2; text-align: center; max-width: 960px; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      background: rgba(232,160,32,0.12);
+      border: 1px solid rgba(232,160,32,0.38);
+      border-radius: 100px;
+      padding: 0.45rem 1.3rem;
+      font-size: 0.73rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 2rem;
+      animation: fadeUp 0.7s ease both;
+    }
+    .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); animation: pulse 2s infinite; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.45; transform: scale(1.6); }
+    }
+    .hero h1 {
+      font-size: clamp(2.8rem, 7.5vw, 5.2rem);
+      font-weight: 900;
+      line-height: 1.04;
+      color: #fff;
+      letter-spacing: -0.025em;
+      animation: fadeUp 0.7s 0.15s ease both;
+    }
+    .hero h1 .accent { color: var(--gold); }
+    .hero-sub {
+      margin-top: 1.2rem;
+      font-size: clamp(1rem, 2.2vw, 1.3rem);
+      color: rgba(255,255,255,0.68);
+      min-height: 2em;
+      animation: fadeUp 0.7s 0.3s ease both;
+    }
+    .cursor {
+      display: inline-block;
+      width: 2px; height: 1.1em;
+      background: var(--gold);
+      margin-left: 3px;
+      vertical-align: text-bottom;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 3.5rem;
+      animation: fadeUp 0.7s 0.45s ease both;
+    }
+    .stat-item { padding: 0 2.5rem; text-align: center; }
+    .stat-item + .stat-item { border-left: 1px solid rgba(255,255,255,0.18); }
+    .stat-num { font-size: 2.8rem; font-weight: 900; color: var(--gold); line-height: 1; letter-spacing: -0.03em; }
+    .stat-label { font-size: 0.68rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 0.3rem; }
+    .scroll-cue {
+      position: absolute;
+      bottom: 2.2rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+      font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+    .chevron {
+      width: 18px; height: 18px;
+      border-right: 2px solid rgba(255,255,255,0.3);
+      border-bottom: 2px solid rgba(255,255,255,0.3);
+      transform: rotate(45deg);
+      animation: bounce 1.6s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: rotate(45deg) translateY(0); opacity: 0.3; }
+      50%       { transform: rotate(45deg) translateY(7px); opacity: 0.9; }
+    }
+
+    /* SHARED */
+    section { padding: 6rem 2rem; }
+    .wrap { max-width: 1120px; margin: 0 auto; }
+    .tag {
+      display: inline-block;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--gold); background: rgba(232,160,32,0.11); border: 1px solid rgba(232,160,32,0.28);
+      padding: 0.3rem 0.9rem; border-radius: 100px; margin-bottom: 0.9rem;
+    }
+    h2.section-title {
+      font-size: clamp(1.9rem, 4vw, 2.9rem);
+      font-weight: 800; color: var(--blue); line-height: 1.12; letter-spacing: -0.022em; margin-bottom: 0.9rem;
+    }
+    .section-lead { font-size: 1.02rem; color: var(--muted); max-width: 680px; line-height: 1.82; }
+
+    /* REVEAL */
+    .r { opacity: 0; transform: translateY(30px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .r.in { opacity: 1; transform: none; }
+    .r.d1 { transition-delay: 0.1s; }
+    .r.d2 { transition-delay: 0.2s; }
+    .r.d3 { transition-delay: 0.3s; }
+    .r.d4 { transition-delay: 0.4s; }
+    .r.d5 { transition-delay: 0.5s; }
+
+    /* IMAGE SLOTS */
+    .img-block { margin: 2.5rem 0; }
+    .img-slot {
+      background: #edf0f7;
+      border: 2px dashed #b5c1d4;
+      border-radius: var(--radius);
+      min-height: 300px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .img-slot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .img-slot-inner { text-align: center; padding: 2.5rem; color: #8a9db8; }
+    .img-slot-inner svg { opacity: 0.45; }
+    .img-hint { font-size: 0.88rem; font-weight: 600; margin-top: 0.75rem; color: #7a8fa8; }
+    .img-sub { font-size: 0.75rem; margin-top: 0.3rem; color: #a0b0c4; line-height: 1.5; }
+    .img-caption { font-size: 0.78rem; color: var(--muted); font-style: italic; text-align: center; margin-top: 0.7rem; }
+    .img-slot.wide { min-height: 360px; }
+    .img-slot.short { min-height: 220px; }
+
+    /* INTRO */
+    #intro { background: var(--white); border-top: 4px solid var(--gold); }
+    .intro-grid {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 4rem; align-items: center; margin-top: 2.5rem;
+    }
+    .info-card {
+      background: linear-gradient(135deg, var(--blue-dark), var(--blue-mid));
+      border-radius: var(--radius); padding: 2.5rem; color: #fff;
+      position: relative; overflow: hidden;
+    }
+    .info-card::after {
+      content: ''; position: absolute; top: -50px; right: -50px;
+      width: 180px; height: 180px; background: var(--gold); border-radius: 50%; opacity: 0.1;
+    }
+    .info-card-label { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem; }
+    .info-card-value { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; line-height: 1.35; }
+    .chip {
+      display: inline-block; background: rgba(255,255,255,0.13); border-radius: 100px;
+      padding: 0.28rem 0.8rem; font-size: 0.72rem; font-weight: 500; color: rgba(255,255,255,0.88); margin: 0.2rem 0.15rem;
+    }
+
+    /* EMPLOYER */
+    #employer { background: var(--bg); }
+    .cards-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+    .card {
+      background: var(--white); border-radius: var(--radius); padding: 2rem;
+      box-shadow: var(--shadow); border-top: 3px solid var(--gold);
+      transition: transform 0.28s, box-shadow 0.28s;
+    }
+    .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+    .card-icon { font-size: 1.9rem; margin-bottom: 1rem; }
+    .card h3 { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--blue); margin-bottom: 0.5rem; }
+    .card p { font-size: 0.9rem; color: var(--muted); line-height: 1.65; }
+
+    /* GOALS */
+    #goals { background: var(--blue); position: relative; overflow: hidden; }
+    #goals::before {
+      content: ''; position: absolute; top: -100px; right: -100px;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(232,160,32,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    #goals .section-title { color: #fff; }
+    #goals .section-lead  { color: rgba(255,255,255,0.62); }
+    .goals-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 1.4rem; margin-top: 3rem;
+    }
+    .goal-card:nth-child(1) { grid-column: 1 / 3; }
+    .goal-card:nth-child(2) { grid-column: 3 / 5; }
+    .goal-card:nth-child(3) { grid-column: 5 / 7; }
+    .goal-card:nth-child(4) { grid-column: 1 / 4; }
+    .goal-card:nth-child(5) { grid-column: 4 / 7; }
+    .goal-card {
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.11);
+      border-radius: var(--radius); padding: 2rem; position: relative;
+      transition: background 0.28s, border-color 0.28s;
+    }
+    .goal-card:hover { background: rgba(255,255,255,0.09); border-color: rgba(232,160,32,0.38); }
+    .achieved-badge {
+      position: absolute; top: 1.1rem; right: 1.1rem;
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+      color: #4ADE80; background: rgba(74,222,128,0.13); border: 1px solid rgba(74,222,128,0.28);
+      padding: 0.2rem 0.6rem; border-radius: 100px;
+    }
+    .goal-num { font-size: 3.2rem; font-weight: 900; color: rgba(232,160,32,0.18); line-height: 1; margin-bottom: 0.4rem; }
+    .goal-title { font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
+    .goal-body { font-size: 0.88rem; color: rgba(255,255,255,0.63); line-height: 1.68; }
+    .goal-reflection {
+      margin-top: 0.9rem; font-size: 0.8rem; font-style: italic;
+      color: rgba(232,160,32,0.75); border-left: 2px solid rgba(232,160,32,0.3);
+      padding-left: 0.7rem; line-height: 1.6;
+    }
+    .progress-track { margin-top: 1.2rem; height: 3px; background: rgba(255,255,255,0.1); border-radius: 100px; overflow: hidden; }
+    .progress-fill {
+      height: 100%; background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+      border-radius: 100px; width: 0; transition: width 1.3s cubic-bezier(0.16,1,0.3,1);
+    }
+
+    /* JOB */
+    #job { background: var(--white); }
+    .feature-card {
+      background: linear-gradient(135deg, #0c1428, var(--blue));
+      border-radius: 22px; padding: 3rem; position: relative; overflow: hidden;
+      margin: 2.5rem 0 2rem; color: #fff;
+    }
+    .feature-card::before {
+      content: ''; position: absolute; bottom: -70px; right: -70px;
+      width: 280px; height: 280px; background: var(--gold); border-radius: 50%; opacity: 0.07;
+    }
+    .feature-eyebrow { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; position: relative; z-index: 1; }
+    .feature-card h3 { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 800; color: #fff; margin-bottom: 1rem; position: relative; z-index: 1; line-height: 1.2; }
+    .feature-card p { font-size: 0.97rem; color: rgba(255,255,255,0.75); max-width: 680px; line-height: 1.85; position: relative; z-index: 1; }
+    .pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.6rem; position: relative; z-index: 1; }
+    .pill { background: rgba(232,160,32,0.14); border: 1px solid rgba(232,160,32,0.32); color: var(--gold); border-radius: 100px; padding: 0.33rem 1rem; font-size: 0.75rem; font-weight: 600; }
+    .flow-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 1.25rem; }
+    .flow { display: flex; align-items: flex-start; margin-bottom: 3rem; overflow-x: auto; padding-bottom: 0.5rem; }
+    .flow-step { flex: 1; min-width: 130px; text-align: center; position: relative; }
+    .flow-step + .flow-step::before { content: '→'; position: absolute; left: -12px; top: 13px; font-size: 1rem; color: var(--gold); font-weight: 700; }
+    .flow-circle {
+      width: 48px; height: 48px; border-radius: 50%; background: var(--blue); color: #fff;
+      font-size: 1.15rem; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 0.55rem; box-shadow: 0 4px 14px rgba(27,58,107,0.25);
+    }
+    .flow-text { font-size: 0.73rem; color: var(--muted); font-weight: 500; line-height: 1.35; }
+    .cards-3-job { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; }
+    .job-card {
+      background: var(--bg); border-radius: var(--radius); padding: 1.75rem;
+      border-left: 4px solid var(--blue); transition: transform 0.28s, box-shadow 0.28s;
+    }
+    .job-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .job-card h4 { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--blue); margin-bottom: 0.55rem; }
+    .job-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+
+    /* CONCLUSIONS */
+    #conclusions { background: var(--bg); }
+    .pull-quote {
+      font-size: clamp(1.15rem, 2.4vw, 1.55rem);
+      font-weight: 700; font-style: italic; color: var(--blue);
+      border-left: 5px solid var(--gold); padding-left: 1.5rem; margin: 2rem 0; line-height: 1.42;
+    }
+    .body-text { font-size: 1rem; color: var(--muted); line-height: 1.88; max-width: 760px; }
+    .body-text + .body-text { margin-top: 1.2rem; }
+
+    /* ACK */
+    #ack { background: var(--blue); text-align: center; }
+    #ack .section-title { color: #fff; }
+    .ack-body { font-size: 0.98rem; color: rgba(255,255,255,0.65); max-width: 600px; margin: 1rem auto 0; line-height: 1.85; }
+    #ack .tag { color: var(--gold); border-color: rgba(232,160,32,0.28); background: rgba(232,160,32,0.1); }
+
+    /* FOOTER */
+    footer { background: #080f1a; border-top: 2px solid var(--gold); padding: 1.8rem 2rem; text-align: center; }
+    .footer-text { font-size: 0.75rem; color: rgba(255,255,255,0.32); letter-spacing: 0.08em; text-transform: uppercase; }
+    .footer-text em { color: var(--gold); font-style: normal; }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .intro-grid  { grid-template-columns: 1fr; }
+      .cards-3     { grid-template-columns: 1fr; }
+      .goals-grid  { grid-template-columns: repeat(2, 1fr); }
+      .goal-card:nth-child(n) { grid-column: auto; }
+      .cards-3-job { grid-template-columns: 1fr; }
+    }
+    @media (min-width: 640px) and (max-width: 900px) {
+      .cards-3     { grid-template-columns: repeat(2, 1fr); }
+      .cards-3-job { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      nav .nav-links { display: none; }
+      .stat-item { padding: 0 1.2rem; }
+      section { padding: 4rem 1.25rem; }
+      .goals-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-logo">Kelechi Udeh | <em>OMAFA 2026</em></div>
+  <ul class="nav-links">
+    <li><a href="#intro">Intro</a></li>
+    <li><a href="#employer">Employer</a></li>
+    <li><a href="#goals">Goals</a></li>
+    <li><a href="#job">My Work</a></li>
+    <li><a href="#conclusions">Reflections</a></li>
+    <li><a href="#ack">Acknowledgments</a></li>
+  </ul>
+</nav>
+
+<section class="hero" id="top">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <canvas id="bg"></canvas>
+  <div class="hero-inner">
+    <div class="badge"><span class="badge-dot"></span>Co-op Work Term Report · Jan to Aug 2026</div>
+    <h1>Winter 2026 <br><span class="accent">Work Term Report</span></h1>
+    <p class="hero-sub" id="typewriter"><span class="cursor"></span></p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num" data-target="8">0</div>
+        <div class="stat-label">Months</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" data-target="1">0</div>
+        <div class="stat-label">Production System Built</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" data-target="5">0</div>
+        <div class="stat-label">Goals Achieved</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Manual Emails Eliminated</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-cue">
+    <span>Scroll</span>
+    <div class="chevron"></div>
+  </div>
+</section>
+
+<section id="intro">
+  <div class="wrap">
+    <div class="r">
+      <div class="tag">Introduction</div>
+      <h2 class="section-title">From Classroom to<br>Government Operations</h2>
+    </div>
+    <div class="intro-grid">
+      <div class="r d1">
+        <p class="section-lead" style="margin-bottom:1.2rem">
+          From January to May 2026, I have been working as a <strong>Junior Knowledge Management Coordinator</strong> in the Planning, Information and Coordination Services (PICS) team at the Ontario Ministry of Agriculture, Food and Agribusiness, part of the Ontario Public Service.
+        </p>
+        <p class="section-lead">
+          This report is my honest look at what I actually worked on and what I genuinely got out of it. The main project was building an automated approval process for staff requests from scratch, using Power Automate, SharePoint, and Power Apps. That one project ended up shaping most of what I learned this term, and this site walks through how it all came together.
+        </p>
+      </div>
+      <div class="r d2">
+        <div class="info-card">
+          <div class="info-card-label">Position Overview</div>
+          <div class="info-card-value">Junior Knowledge Management Coordinator</div>
+          <div>
+            <span class="chip">OMAFA</span>
+            <span class="chip">Ontario Public Service</span>
+            <span class="chip">Jan to May 2026</span>
+            <span class="chip">Power Automate</span>
+            <span class="chip">SharePoint</span>
+            <span class="chip">Power Apps</span>
+            <span class="chip">Knowledge Management</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="img-block r d3" style="text-align:center;">
+      <img src="IMG_9910.jpeg" alt="Work term photo" style="max-width:100%; max-height:480px; width:auto; height:auto; border-radius:var(--radius); box-shadow:var(--shadow-lg); display:inline-block;">
+      <p class="img-caption">Caption: Office Work Station</p>
+    </div>
+  </div>
+</section>
+
+<section id="employer">
+  <div class="wrap">
+    <div class="r">
+      <div class="tag">The Employer</div>
+      <h2 class="section-title">Ontario Ministry of Agriculture,<br>Food and Agribusiness</h2>
+      <p class="section-lead">
+        OMAFA is an Ontario government ministry that supports one of the most important parts of the provincial economy. Ontario's agri-food sector generates over <strong>47 billion dollars</strong> annually and employs hundreds of thousands of people across the province. Getting placed here meant working somewhere that had real weight to it.
+      </p>
+    </div>
+    <div class="cards-3">
+      <div class="card r d1">
+        <div class="card-icon">🏛️</div>
+        <h3>What They Do</h3>
+        <p>OMAFA supports Ontario's farmers, food processors, and agri-food businesses through programs, policies, and services. The ministry was created in 2024 when the former OMAFRA was reorganized into two separate ministries, each focused on distinct priorities.</p>
+      </div>
+      <div class="card r d2">
+        <div class="card-icon">💻</div>
+        <h3>Computing at OMAFA</h3>
+        <p>The whole ministry runs on Microsoft 365. SharePoint is everywhere, Power Platform is used for internal automation, and there is significant data work happening across teams. My role ended up touching all three of those areas directly.</p>
+      </div>
+      <div class="card r d3">
+        <div class="card-icon">🌾</div>
+        <h3>Scale and Context</h3>
+        <p>As part of the Ontario Public Service, OMAFA has thousands of staff working across the province. That scale changes how you think about the work. When you build something here, real people are going to depend on it every single day.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="goals">
+  <div class="wrap">
+    <div class="r">
+      <div class="tag">Learning Goals</div>
+      <h2 class="section-title">What I Set Out to Achieve</h2>
+      <p class="section-lead">
+        I wrote five goals before the term started. All five were met. The second one in particular grew into something much larger than I originally planned for.
+      </p>
+    </div>
+    <div class="goals-grid">
+      <div class="goal-card r d1">
+        <span class="achieved-badge">Achieved</span>
+        <div class="goal-num">01</div>
+        <div class="goal-title">Data Analysis and Reporting</div>
+        <div class="goal-body">I wanted to genuinely improve at working with data. My plan was to use Excel and Power BI to clean datasets, build visuals, and get comfortable with the reporting cycles the team ran on a regular basis.</div>
+        <div class="goal-reflection">By the end of the term my reports were going to management without many revisions. That felt like a real benchmark to have hit.</div>
+        <div class="progress-track"><div class="progress-fill" data-w="95"></div></div>
+      </div>
+      <div class="goal-card r d2">
+        <span class="achieved-badge">Achieved</span>
+        <div class="goal-num">02</div>
+        <div class="goal-title">Process Improvement and Automation</div>
+        <div class="goal-body">I wanted to find at least one repetitive manual process and make it better. Power Automate was on my list specifically because I had no hands-on experience with it yet and knew workplaces actually used it.</div>
+        <div class="goal-reflection">This goal became the entire automated approval system. What I thought would be a small fix turned into a full production pipeline that staff use today.</div>
+        <div class="progress-track"><div class="progress-fill" data-w="100"></div></div>
+      </div>
+      <div class="goal-card r d3">
+        <span class="achieved-badge">Achieved</span>
+        <div class="goal-num">03</div>
+        <div class="goal-title">Project Coordination and Organization</div>
+        <div class="goal-body">I wanted to get better at managing my own work when multiple things were running at the same time. I knew I would be juggling tasks and did not want anything to slip through the cracks.</div>
+        <div class="goal-reflection">Balancing the approval system build alongside documentation and reporting work pushed me hard in this area. I got noticeably better at it as the term went on.</div>
+        <div class="progress-track"><div class="progress-fill" data-w="90"></div></div>
+      </div>
+      <div class="goal-card r d4">
+        <span class="achieved-badge">Achieved</span>
+        <div class="goal-num">04</div>
+        <div class="goal-title">Technical Documentation and Knowledge Transfer</div>
+        <div class="goal-body">I wanted to write documentation that actually gets used. Process maps, user guides, reference notes. Not material that sits in a folder, but things that genuinely help people do their work.</div>
+        <div class="goal-reflection">When I watched colleagues use the guides I wrote to figure out the new approval system on their own, that was the moment I felt this goal was properly done.</div>
+        <div class="progress-track"><div class="progress-fill" data-w="92"></div></div>
+      </div>
+      <div class="goal-card r d5">
+        <span class="achieved-badge">Achieved</span>
+        <div class="goal-num">05</div>
+        <div class="goal-title">Technical Problem Solving and Issue Analysis</div>
+        <div class="goal-body">I wanted to get better at diagnosing problems rather than just describing them. My goal was to practice tracing issues back to their root cause and explaining what I found clearly to the people who needed to know.</div>
+        <div class="goal-reflection">Debugging Power Automate flows taught me this in a way I did not expect. You have to be methodical, read logs carefully, and explain your findings to people who were not in the weeds with you.</div>
+        <div class="progress-track"><div class="progress-fill" data-w="88"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="job">
+  <div class="wrap">
+    <div class="r">
+      <div class="tag">The Work</div>
+      <h2 class="section-title">Turning a Vague Ask<br>Into Something Real</h2>
+      <p class="section-lead">
+        The biggest lesson from this term had nothing to do with Power Automate. It was that the hardest part of automating a process is actually understanding the process first.
+      </p>
+    </div>
+
+    <div class="feature-card r">
+      <div class="feature-eyebrow">Featured Project</div>
+      <h3>Automated Staff Request Approval System</h3>
+      <p>
+        When I got there, staff requests for approval and procurement were handled through email chains. There was no consistent format, no way to track where a request stood, and approval times were unpredictable. I was asked to fix that. The solution was using a SharePoint Library to store and track every request, a Power Automate flow to handle routing, approvals, notifications, and escalations when approvals were taking too long, and a Power App where the Director would have a chance to actually accept/reject the approval. The system went live and is being used by staff today.
+      </p>
+      <div class="pills">
+        <span class="pill">Power Automate</span>
+        <span class="pill">Power Apps</span>
+        <span class="pill">SharePoint Lists</span>
+        <span class="pill">Workflow Design</span>
+        <span class="pill">Microsoft 365</span>
+      </div>
+    </div>
+
+    <div class="img-block r" style="text-align:center;">
+      <img src="image001.jpg" alt="Work term screenshot" style="max-width:100%; max-height:480px; width:auto; height:auto; border-radius:var(--radius); box-shadow:var(--shadow-lg); display:inline-block;">
+      <p class="img-caption">Caption: Screenshot of my Approval Process</p>
+    </div>
+
+    <div class="r">
+      <div class="flow-label">How the System Works</div>
+      <div class="flow">
+        <div class="flow-step">
+          <div class="flow-circle">📝</div>
+          <div class="flow-text">Staff submits<br>via Sharepoint Library</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-circle">🗄️</div>
+          <div class="flow-text">SharePoint<br>logs request</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-circle">⚡</div>
+          <div class="flow-text">Power Automate<br>routes to approver</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-circle">✔️</div>
+          <div class="flow-text">Manager<br>approves or rejects via Power App</div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-circle">🔔</div>
+          <div class="flow-text">Auto notification<br>sent to requester</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cards-3-job">
+      <div class="job-card r d1">
+        <h4>Documentation and Knowledge Base</h4>
+        <p>I maintained and expanded the team's internal SharePoint documentation. This meant writing user guides for the approval system, organizing knowledge articles, and making sure information was actually findable when people needed it rather than buried somewhere.</p>
+      </div>
+      <div class="job-card r d2">
+        <h4>Data and Reporting</h4>
+        <p>I built reports and dashboards from SharePoint data so management could see request volumes, approval timelines, and where things were getting held up. It was the first time that information had been visible in one place for the team.</p>
+      </div>
+      <div class="job-card r d3">
+        <h4>Stakeholder Collaboration</h4>
+        <p>A big part of the job was sitting with different teams, understanding how they actually worked day to day, and figuring out what the approval system needed to do. That back and forth shaped the final product more than any technical decision did.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="conclusions">
+  <div class="wrap">
+    <div class="r">
+      <div class="tag">Reflections</div>
+      <h2 class="section-title">What I Am Taking Forward</h2>
+    </div>
+    <div class="pull-quote r d1">
+      "I came in thinking the technical parts would be the hard parts. They were not."
+    </div>
+    <p class="body-text r d2">
+      The approval system taught me that understanding always comes before building. I had to spend a lot of time just listening to people describe a process they had been running on instinct for years, and then figure out how to turn that into something a computer could follow every single time without error. That part was harder than anything I had to write in Power Automate. It is also the part I feel most proud of getting right.
+    </p>
+    <p class="body-text r d3" style="margin-top:1.2rem">
+      I am leaving this term with skills I did not have before and a much clearer sense of what I am actually good at. I can build things that real people use. I can write documentation that real people read. And I now understand what it means to work inside a large government organization, with all the careful processes and sign-offs that come with that. I will carry all of it forward into the next four months of this coop.
+    </p>
+
+    <div class="img-block r d4" style="max-width:640px; margin-top:2.5rem; text-align:center;">
+      <img src="Logo_of_the_Ministry_of_Agriculture,_Food_and_Rural_Affairs_of_Ontario.svg.png" alt="OMAFA logo" style="max-width:100%; max-height:220px; width:auto; height:auto; display:inline-block; mix-blend-mode:multiply;">
+      <p class="img-caption">Caption: OMAFA Logo</p>
+    </div>
+  </div>
+</section>
+
+<section id="ack">
+  <div class="wrap">
+    <div class="r">
+      <div class="tag">Thank You</div>
+      <h2 class="section-title">Acknowledgments</h2>
+      <p class="ack-body">
+        Thank you to my supervisor and everyone on the PICS team at OMAFA for giving me real work and trusting me to do it. I want to thank the staff who took time out of their own workday to walk me through processes they could have just handled themselves. And to the University of Guelph Co-op program for making this kind of hands-on experience part of what a computing degree actually looks like.
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="footer-text">
+    Kelechi Udeh | <em>OMAFA Co-op Work Term Report</em> | Jan to Aug 2026 | University of Guelph, Bachelor of Computing
+  </p>
+</footer>
+
+<script>
+  /* Typewriter */
+  const phrases = [
+    'Junior Knowledge Management Coordinator',
+    'Power Automate and SharePoint Developer',
+    'Process Automation Designer',
+    'Ontario Ministry of Agriculture, Food and Agribusiness',
+  ];
+  let pi = 0, ci = 0, deleting = false;
+  const tw = document.getElementById('typewriter');
+  function type() {
+    const word = phrases[pi];
+    if (deleting) {
+      tw.innerHTML = word.slice(0, --ci) + '<span class="cursor"></span>';
+      if (ci === 0) { deleting = false; pi = (pi + 1) % phrases.length; return setTimeout(type, 380); }
+    } else {
+      tw.innerHTML = word.slice(0, ++ci) + '<span class="cursor"></span>';
+      if (ci === word.length) { setTimeout(() => { deleting = true; type(); }, 2400); return; }
+    }
+    setTimeout(type, deleting ? 32 : 68);
+  }
+  setTimeout(type, 900);
+
+  /* Canvas particles */
+  const canvas = document.getElementById('bg');
+  const ctx = canvas.getContext('2d');
+  let dots = [];
+  function resize() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
+  resize();
+  window.addEventListener('resize', () => { resize(); spawnDots(); });
+  function spawnDots() {
+    dots = [];
+    const n = Math.floor((canvas.width * canvas.height) / 16000);
+    for (let i = 0; i < n; i++) {
+      dots.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.4+0.4, vx: (Math.random()-0.5)*0.28, vy: (Math.random()-0.5)*0.28, a: Math.random()*0.35+0.08 });
+    }
+  }
+  spawnDots();
+  function tick() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    dots.forEach(d => {
+      ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(232,160,32,${d.a})`; ctx.fill();
+      d.x += d.vx; d.y += d.vy;
+      if (d.x < 0) d.x = canvas.width; if (d.x > canvas.width) d.x = 0;
+      if (d.y < 0) d.y = canvas.height; if (d.y > canvas.height) d.y = 0;
+    });
+    requestAnimationFrame(tick);
+  }
+  tick();
+
+  /* Scroll reveal */
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('in');
+      e.target.querySelectorAll('.progress-fill').forEach(b => { b.style.width = b.dataset.w + '%'; });
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.r').forEach(el => ro.observe(el));
+
+  document.querySelectorAll('.goal-card').forEach(card => {
+    new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        e.target.querySelectorAll('.progress-fill').forEach(b => { b.style.width = b.dataset.w + '%'; });
+      });
+    }, { threshold: 0.3 }).observe(card);
+  });
+
+  /* Hero counters */
+  function easeOutCubic(t) { return 1 - Math.pow(1-t, 3); }
+  function animateNum(el, target) {
+    const start = performance.now();
+    (function update(now) {
+      const p = Math.min((now - start) / 1600, 1);
+      el.textContent = Math.floor(easeOutCubic(p) * target);
+      if (p < 1) requestAnimationFrame(update);
+    })(start);
+  }
+  new IntersectionObserver(entries => {
+    if (!entries[0].isIntersecting) return;
+    document.querySelectorAll('.stat-num[data-target]').forEach(el => animateNum(el, +el.dataset.target));
+  }, { threshold: 0.5 }).observe(document.querySelector('.hero-stats'));
+
+  /* Nav active */
+  const sections = [...document.querySelectorAll('section[id]')];
+  const links = [...document.querySelectorAll('.nav-links a')];
+  window.addEventListener('scroll', () => {
+    const pos = window.scrollY + 80;
+    let cur = '';
+    sections.forEach(s => { if (pos >= s.offsetTop) cur = s.id; });
+    links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+  }, { passive: true });
+
+  /* Smooth scroll */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => { e.preventDefault(); document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' }); });
+  });
+</script>
+</body>
+</html>
